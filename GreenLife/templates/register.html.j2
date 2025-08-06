@@ -1,0 +1,82 @@
+{% extends "layout.html.j2" %} 
+{% block content %}
+<div class="card col-md-7 mt-3 p-3 mx-auto pb-4">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend class="text-center">Join Today</legend>
+            <div class="form-group row mt-1">
+                {{form.username.label(class="col-md-3 pt-2 form-control-label")}}
+                <div class="col-md-9">
+                    {% if form.username.errors %} 
+                        {{ form.username(class="form-control is-invaild")}}
+                        <small class="invaild-feedback text-danger">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </small>
+                    {% else %} 
+                        {{form.username(class="form-control")}} 
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row mt-2">
+                {{form.email.label(class="col-md-3 pt-2 form-control-label")}}
+                <div class="col-md-9">
+                    {% if form.email.errors %} 
+                        {{ form.email(class="form-control is-invaild")}}
+                        <small class="invaild-feedback text-danger">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </small>
+                    {% else %} 
+                        {{form.email(class="form-control")}} 
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row mt-2">
+                {{form.password.label(class="col-md-3 pt-2 form-control-label")}}
+                <div class="col-md-9">
+                    {% if form.password.errors %} 
+                        {{ form.password(class="form-control is-invaild")}}
+                        <small class="invaild-feedback text-danger">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </small>
+                    {% else %} 
+                        {{form.password(class="form-control")}} 
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row mt-2">
+                {{form.confirm_password.label(class="col-md-3 pt-2 form-control-label")}}
+                <div class="col-md-9">
+                    {% if form.confirm_password.errors %} 
+                        {{ form.confirm_password(class="form-control is-invaild")}}
+                        <small class="invaild-feedback text-danger">
+                            {% for error in form.confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </small>
+                    {% else %} 
+                        {{form.confirm_password(class="form-control")}}
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form_group row mt-2">
+            <div class="col-md-2 offset-md-3">
+                {{form.submit(class="btn btn-outline-info")}}
+            </div>
+            <div class="offset-md-3 col-md-9 border-left mt-2">
+                <small class="text-muted">
+                    Already Have An Account?
+                    <a class="login-btn" href="{{url_for('login')}}">Login</a>
+                </small>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

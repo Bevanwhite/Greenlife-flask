@@ -1,0 +1,63 @@
+{% extends "layout.html.j2" %} 
+{% block content %} 
+<div class="card col-md-7 mt-3 p-3 mx-auto pb-4">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend class="text-center">Log In</legend>
+            <div class="form-group row mt-2">
+                {{form.email.label(class="col-md-3 pt-2 form-control-label")}}
+                <div class="col-md-9">
+                    {% if form.email.errors %} 
+                        {{ form.email(class="form-control is-invaild")}}
+                        <small class="invaild-feedback text-danger">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </small>
+                    {% else %} 
+                        {{form.email(class="form-control")}} 
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row mt-2">
+                {{form.password.label(class="col-md-3 pt-2 form-control-label")}}
+                <div class="col-md-9">
+                    {% if form.password.errors %} 
+                        {{ form.password(class="form-control is-invaild")}}
+                        <small class="invaild-feedback text-danger">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </small>
+                    {% else %} 
+                        {{form.password(class="form-control")}} 
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-md-3 col-md-9 mt-2">
+                    {{ form.remember(class="form-check-input")}}
+                    {{ form.remember.label(class="form-check-label")}}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form_group row mt-2">
+            <div class="col-md-2 offset-md-3">
+                {{form.submit(class="btn btn-outline-info")}}
+            </div>
+            <div class="offset-md-3 col-md-9 border-left mt-2">
+                <small class="text-muted">
+                    <a class="login-btn" href="#">Forgot Password?</a>
+                </small>
+            </div>
+            <div class="offset-md-3 col-md-9 border-left mt-2">
+                <small class="text-muted">
+                    Need An Account?
+                    <a class="login-btn" href="{{url_for('register')}}">Sign Up</a>
+                </small>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
