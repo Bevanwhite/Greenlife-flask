@@ -1,2 +1,2 @@
 testpy: 
-	cd greenlife && flask run
+	flask run

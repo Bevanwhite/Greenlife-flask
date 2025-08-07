@@ -1,10 +1,10 @@
 {% extends "layout.html.j2" %} 
 {% block content %} 
-<div class="card col-md-7 mt-3 p-3 mx-auto pb-4">
+<div class="card col-md-5 mt-3 p-3 mx-auto pb-4">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset>
-            <legend class="text-center">Log In</legend>
+            <legend class="text-center">Welcome Back</legend>
             <div class="form-group row mt-2">
                 {{form.email.label(class="col-md-3 pt-2 form-control-label")}}
                 <div class="col-md-9">
@@ -43,18 +43,16 @@
             </div>
         </fieldset>
         <div class="form_group row mt-2">
-            <div class="col-md-2 offset-md-3">
-                {{form.submit(class="btn btn-outline-info")}}
+            <div class="col-md-3 offset-md-3">
+                {{form.submit(class="btn btn-outline-info col-md-12")}}
             </div>
-            <div class="offset-md-3 col-md-9 border-left mt-2">
-                <small class="text-muted">
+            <div class="offset-md-3 col-md-9 mt-2 row">
+                <small class="text-muted col-md-6 text-start p-0">
                     <a class="login-btn" href="#">Forgot Password?</a>
                 </small>
-            </div>
-            <div class="offset-md-3 col-md-9 border-left mt-2">
-                <small class="text-muted">
-                    Need An Account?
-                    <a class="login-btn" href="{{url_for('register')}}">Sign Up</a>
+                <small class="text-muted col-md-6 text-end p-0">
+                    <a class="login-btn" href="{{url_for('register')}}">
+                    Don’t have an account?</a>
                 </small>
             </div>
         </div>
