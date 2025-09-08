@@ -1,0 +1,19 @@
+{% from "helper/form_helper.html.j2" import render_field %}
+{% extends "layout.html.j2" %} 
+{% block content %}
+<div class="card col-md-7 mt-3 p-3 mx-auto pb-4">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend class="text-center">Reset Password</legend>
+            {{ render_field(form.password) }}
+            {{ render_field(form.confirm_password) }}
+        </fieldset>
+        <div class="form_group row mt-2">
+            <div class="col-md-3 offset-md-3">
+                {{form.submit(class="btn btn-outline-info col-md-12")}}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

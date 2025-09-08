@@ -1,3 +1,10 @@
 body {
     background-color: #f8f8f8;
 }
+.profile-pic {
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}

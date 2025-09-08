@@ -10,5 +10,9 @@
 -   make flask form install using - `pip install flask-wtf`
 -   `from greenlife import db` for import the database
 -   `db.create_all()` - for to create db
--   `from greenlife import User, Service, Appointment, Message, Query` - for to add db classes
+-   `from greenlife.models import User, Service, Appointment, Message, Query` - for to add db classes
 -   `db.drop_all()` to drop all the tables
+-   `from greenlife.seeds import seed_data`
+-   `seed_data()`
+-   create virtual env using conda `conda create --name venv python=3.12`
+-   activate it using `conda activate venv`

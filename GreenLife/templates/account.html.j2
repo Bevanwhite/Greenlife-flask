@@ -1,0 +1,38 @@
+{% from "helper/form_helper.html.j2" import render_field %}
+{% extends "layout.html.j2" %} 
+{% block content %}
+<div class="col-md-8 mx-auto">
+    <div class="card mt-2 pb-2">
+        <div class="row pt-2">
+            <div class="col-md-3 d-flex justify-content-center">
+                <img 
+                src="{{image_file}}" 
+                class="profile-pic" 
+                alt="users profile pics">
+            </div>
+            <div class="col-md-8 m-2">
+                <h1>{{current_user.username}}</h1>
+                <p>{{current_user.email}}</p>
+            </div>
+        </div>
+        <div class="col-md-12 p-2">
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset>
+                    <legend>Account Info</legend>
+                    {{ render_field(form.username) }}
+                    {{ render_field(form.full_name) }}
+                    {{ render_field(form.email) }}
+                    {{ render_field(form.phone) }}
+                    {{ render_field(form.picture) }}
+                </fieldset>
+                <div class="form_group row mt-2">
+                    <div class="col-md-2 offset-md-3">
+                        {{form.submit(class="btn btn-outline-info")}}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% macro delete_modal(service)%}
+<div class="modal fade" id="deleteModal-{{service.id}}" tabindex="-1" 
+    aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="deleteModalLabel">Delete {{service.name}}?</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Do you really want to delete this Service
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form action="{{url_for('delete_service', service_id=service.id)}}" method="post">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_pagination(pagination, endpoint, kwargs={}) %}
+    {% for page_num in pagination.iter_pages(left_edge=1, left_current=1, right_edge=1, right_current=1 ) %}
+        {% if page_num %}
+            {% if pagination.page == page_num %}
+                <a class="btn btn-secondary mb-2" 
+                    href="{{url_for(endpoint, page=page_num, **kwargs)}}">
+                    {{ page_num }}
+                </a>
+            {% else %}
+                <a class="btn  btn-outline-secondary mb-2" 
+                    href="{{url_for(endpoint, page=page_num, **kwargs)}}">
+                    {{ page_num }}
+                </a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif%}
+    {% endfor %}
+{% endmacro %}

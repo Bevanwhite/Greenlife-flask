@@ -1,0 +1,204 @@
+<nav class="navbar bg-dark navbar-expand-lg bg-body-tertiary"
+    data-bs-theme="dark">
+    <div class="container">
+        <a class="navbar-brand" href="{{url_for('home')}}">GreenLife</a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+            class="collapse navbar-collapse"
+            id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        Services
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Ayurvedic Therapy
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Yoga & Meditation
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Nutrition & Diet
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Physiotherapy
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                Massage Therapy
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('about')}}">
+                        About
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('about')}}">
+                        Contact Us
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav d-flex">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role.name == 'user' %}
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                User Dashboard
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        View Appointments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Messages
+                                    </a>
+                                </li>
+                                <hr>
+                                <li>
+                                    <a class="dropdown-item" href="{{url_for('account')}}">
+                                        Account
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if current_user.role.name == 'therapist' %}
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                Therapist Dashboard
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{url_for('service')}}">
+                                        Services
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Appointments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Client Info
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Respond to Queries
+                                    </a>
+                                </li>
+                                <hr>
+                                <li>
+                                    <a class="dropdown-item" href="{{url_for('account')}}">
+                                        Account
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    {% if current_user.role.name == 'admin' %}
+                        <li class="nav-item dropdown">
+                            <a
+                                class="nav-link dropdown-toggle"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                Admin Dashboard
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{url_for('service')}}">
+                                        Services
+                                    </a>
+                                </li>
+                                <li>
+                                    {# <a class="dropdown-item" href="{{url_for('manage_user')}}">
+                                        Manage Users
+                                    </a> #}
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        View Reports
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        Settings
+                                    </a>
+                                </li>
+                                <hr>
+                                <li>
+                                    <a class="dropdown-item" href="{{url_for('account')}}">
+                                        Account
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('logout')}}">
+                            Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('register')}}">
+                            Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('login')}}">
+                            Login
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

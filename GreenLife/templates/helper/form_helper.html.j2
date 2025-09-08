@@ -1,0 +1,17 @@
+{% macro render_field(field, label_class="col-md-3 pt-2 form-control-label", input_class="form-control") %}
+    <div class="form-group row mt-2">
+        {{ field.label(class=label_class) }}
+        <div class="col-md-9">
+            {% if field.errors %} 
+                {{ field(class=input_class + " is-invaild")}}
+                <small class="invaild-feedback text-danger">
+                    {% for error in field.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </small>
+            {% else %} 
+                {{ field(class=input_class) }} 
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
