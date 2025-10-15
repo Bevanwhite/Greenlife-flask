@@ -1,5 +1,5 @@
 from greenlife import db, bcrypt
-from greenlife.models import Role, ServiceType, User, Service, Therapist, Admin, DurationOptions
+from greenlife.models import Role, ServiceType, User, Service, Therapist, Admin, DurationOptions,TherapistService
 
 def seed_data():
     # Add roles
@@ -22,17 +22,17 @@ def seed_data():
             db.session.add(ServiceType(name=service_type))
 
     duration_options = [
-        DurationOptions(minute=30, name="30 minutes"),
-        DurationOptions(minute=40, name="40 minutes"),
-        DurationOptions(minute=45, name="45 minutes"),
-        DurationOptions(minute=50, name="50 minutes"),
-        DurationOptions(minute=60, name="1 hour"),
-        DurationOptions(minute=70, name="1 hour 10 minutes"),
-        DurationOptions(minute=75, name="1 hour 15 minutes"),
-        DurationOptions(minute=90, name="1 hour 30 minutes"),
-        DurationOptions(minute=120, name="2 hours"),
-        DurationOptions(minute=180, name="3 hours"),
-        DurationOptions(minute=240, name="4 hours"),
+        DurationOptions(minute=30, name="30 minutes"), #1
+        DurationOptions(minute=40, name="40 minutes"), #2
+        DurationOptions(minute=45, name="45 minutes"), #3
+        DurationOptions(minute=50, name="50 minutes"), #4
+        DurationOptions(minute=60, name="1 hour"), #5
+        DurationOptions(minute=70, name="1 hour 10 minutes"), #6
+        DurationOptions(minute=75, name="1 hour 15 minutes"), #7
+        DurationOptions(minute=90, name="1 hour 30 minutes"), #8
+        DurationOptions(minute=120, name="2 hours"), #9
+        DurationOptions(minute=180, name="3 hours"), #10
+        DurationOptions(minute=240, name="4 hours"), #11
     ]
 
     for duration in duration_options:
@@ -54,7 +54,7 @@ def seed_data():
             email="sarah.smith@example.com",
             phone="0779876543",
             role_id=Role.query.filter_by(name="therapist").first().id,
-            password=bcrypt.generate_password_hash("2").decode('utf-8')
+            password=bcrypt.generate_password_hash("1").decode('utf-8')
         ),
         User(
             username="admin",
@@ -62,7 +62,7 @@ def seed_data():
             email="Jefferybevan@gmail.com",
             phone="0751112233",
             role_id=Role.query.filter_by(name="admin").first().id,
-            password=bcrypt.generate_password_hash("3").decode('utf-8')
+            password=bcrypt.generate_password_hash("1").decode('utf-8')
         ),
         User(
             username="therapist_ayurveda",
@@ -71,7 +71,7 @@ def seed_data():
             phone="0711111111",
             image_file="therapist_ayurveda.jpg",
             role_id=Role.query.filter_by(name="therapist").first().id,
-            password=bcrypt.generate_password_hash("therapist123").decode('utf-8')
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
         ),
         User(
             username="therapist_yoga",
@@ -80,7 +80,7 @@ def seed_data():
             phone="0722222222",
             image_file="therapist_yoga.jpg",
             role_id=Role.query.filter_by(name="therapist").first().id,
-            password=bcrypt.generate_password_hash("therapist123").decode('utf-8')
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
         ),
         User(
             username="therapist_nutrition",
@@ -89,7 +89,7 @@ def seed_data():
             phone="0733333333",
             image_file="therapist_nutrition.jpg",
             role_id=Role.query.filter_by(name="therapist").first().id,
-            password=bcrypt.generate_password_hash("therapist123").decode('utf-8')
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
         ),
         User(
             username="therapist_physiotherapy",
@@ -98,7 +98,7 @@ def seed_data():
             phone="0744444444",
             image_file="therapist_physiotherapy.jpg",
             role_id=Role.query.filter_by(name="therapist").first().id,
-            password=bcrypt.generate_password_hash("therapist123").decode('utf-8')
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
         ),
         User(
             username="therapist_massage",
@@ -107,7 +107,52 @@ def seed_data():
             phone="0755555555",
             image_file="therapist_massage.jpg",
             role_id=Role.query.filter_by(name="therapist").first().id,
-            password=bcrypt.generate_password_hash("therapist123").decode('utf-8')
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
+        ),
+        User(
+            username="therapist_acupuncture",
+            full_name="Dr. Chen Wei",
+            email="chen.wei@example.com",
+            phone="0766666666",
+            image_file="therapist_acupuncture.jpg",
+            role_id=Role.query.filter_by(name="therapist").first().id,
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
+        ),
+        User(
+            username="therapist_psychology",
+            full_name="Dr. Priya Sharma",
+            email="priya.sharma@example.com",
+            phone="0777777777",
+            image_file="therapist_psychology.jpg",
+            role_id=Role.query.filter_by(name="therapist").first().id,
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
+        ),
+        User(
+            username="therapist_chiropractic",
+            full_name="Dr. James Wilson",
+            email="james.wilson@example.com",
+            phone="0788888888",
+            image_file="therapist_chiropractic.jpg",
+            role_id=Role.query.filter_by(name="therapist").first().id,
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
+        ),
+        User(
+            username="therapist_reflexology",
+            full_name="Ms. Mei Lin",
+            email="mei.lin@example.com",
+            phone="0799999999",
+            image_file="therapist_reflexology.jpg",
+            role_id=Role.query.filter_by(name="therapist").first().id,
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
+        ),
+        User(
+            username="therapist_aromatherapy",
+            full_name="Ms. Sophia Williams",
+            email="sophia.williams@example.com",
+            phone="0700000000",
+            image_file="therapist_aromatherapy.jpg",
+            role_id=Role.query.filter_by(name="therapist").first().id,
+            password=bcrypt.generate_password_hash("2").decode('utf-8')
         )
     ]
 
@@ -123,44 +168,44 @@ def seed_data():
                     role_id=user.role_id
                 )
             )
-            
+                
     therapists = [
-        Therapist(
-            user_id=2,  # assuming auto-increment id = 2
-            specialization="Ayurvedic Therapy",
-            bio="Experienced therapist specializing in Ayurveda and holistic healing.",
-            available=True
-        ),
-        Therapist(
-            user_id=4,  # assuming auto-increment id = 2
-            specialization="Ayurvedic Therapy",
-            bio="Expert in traditional Ayurvedic healing.",
-            available=True
-        ),
-        Therapist(
-            user_id=5,  # assuming auto-increment id = 2
-            specialization="Yoga & Meditation",
-            bio="Certified yoga and meditation trainer.",
-            available=True
-        ),
-        Therapist(
-            user_id=6,  # assuming auto-increment id = 2
-            specialization="Nutrition & Diet",
-            bio="Nutritionist with 10 years of experience.",
-            available=True
-        ),
-        Therapist(
-            user_id=7,  # assuming auto-increment id = 2
-            specialization="Physiotherapy",
-            bio="Physiotherapist specialized in sports recovery.",
-            available=True
-        ),
-        Therapist(
-            user_id=8,  # assuming auto-increment id = 2
-            specialization="Massage Therapy",
-            bio="Professional massage therapist.",
-            available=True
-        )
+            Therapist(
+                user_id=2,  # assuming auto-increment id = 2
+                specialization="Ayurvedic Therapy",
+                bio="Experienced therapist specializing in Ayurveda and holistic healing.",
+                available=True
+            ),
+            Therapist(
+                user_id=4,  # assuming auto-increment id = 2
+                specialization="Ayurvedic Therapy",
+                bio="Expert in traditional Ayurvedic healing.",
+                available=True
+            ),
+            Therapist(
+                user_id=5,  # assuming auto-increment id = 2
+                specialization="Yoga & Meditation",
+                bio="Certified yoga and meditation trainer.",
+                available=True
+            ),
+            Therapist(
+                user_id=6,  # assuming auto-increment id = 2
+                specialization="Nutrition & Diet",
+                bio="Nutritionist with 10 years of experience.",
+                available=True
+            ),
+            Therapist(
+                user_id=7,  # assuming auto-increment id = 2
+                specialization="Physiotherapy",
+                bio="Physiotherapist specialized in sports recovery.",
+                available=True
+            ),
+            Therapist(
+                user_id=8,  # assuming auto-increment id = 2
+                specialization="Massage Therapy",
+                bio="Professional massage therapist.",
+                available=True
+            )
     ]
 
     for therapist in therapists:
@@ -190,208 +235,183 @@ def seed_data():
         Service(
             name="Herbal Detox", 
             description="Full-body detox using traditional Ayurvedic herbs.",
-            duration_options_id=2,   # was already 2
-            price=5000, 
             user_id=4, 
-            service_type_id=1
+            service_type_id=1,
+            active=True
         ),
         Service(
             name="Shirodhara", 
             description="Warm oil treatment poured over the forehead.",
-            duration_options_id=3,  # 45 → id=3
-            price=4000, 
             user_id=4, 
-            service_type_id=1
+            service_type_id=1,
+            active=True
         ),
         Service(
             name="Panchakarma", 
             description="Deep cleansing and rejuvenation therapy.",
-            duration_options_id=8,  # 90 → id=8
-            price=8000, 
             user_id=4, 
-            service_type_id=1
+            service_type_id=1,
+            active=True
         ),
         Service(
             name="Abhyanga Massage", 
             description="Oil-based massage for body balance.",
-            duration_options_id=5,  # 60 → id=5
-            price=4500, 
             user_id=4, 
-            service_type_id=1
+            service_type_id=1,
+            active=True
         ),
         Service(
             name="Nasya", 
             description="Nasal therapy with medicated oils.",
-            duration_options_id=1,  # 30 → id=1
-            price=2500, 
             user_id=4, 
-            service_type_id=1
+            service_type_id=1,
+            active=True
         ),
         Service(
             name="Morning Yoga Flow", 
             description="Energizing yoga practice to start your day.",
-            duration_options_id=5,  # 60 → id=5
-            price=3000, 
             user_id=5, 
-            service_type_id=2
+            service_type_id=2,
+            active=True
         ),
         Service(
             name="Pranayama Breathing", 
             description="Breathing exercises for calmness.",
-            duration_options_id=3,  # 45 → id=3
-            price=2500, 
             user_id=5, 
-            service_type_id=2
+            service_type_id=2,
+            active=True
         ),
         Service(
             name="Mindfulness Meditation", 
             description="Guided meditation for focus.",
-            duration_options_id=2,  # 40 → id=2
-            price=2000, 
             user_id=5, 
-            service_type_id=2
+            service_type_id=2,
+            active=True
         ),
         Service(
             name="Yoga Nidra", 
             description="Deep relaxation yoga practice.",
-            duration_options_id=4,  # 50 → id=4
-            price=2800, 
             user_id=5, 
-            service_type_id=2
+            service_type_id=2,
+            active=True
         ),
         Service(
             name="Hatha Yoga", 
             description="Traditional yoga for strength and flexibility.",
-            duration_options_id=6,  # 70 → id=6
-            price=3500, 
             user_id=5, 
-            service_type_id=2
+            service_type_id=2,
+            active=True
         ),
 
         # Nutrition & Diet (therapists[2])
         Service(
             name="Diet Consultation", 
             description="Personalized diet plan consultation.",
-            duration_options_id=3,  # 45 → id=3
-            price=3000, 
             user_id=6, 
-            service_type_id=3
+            service_type_id=3,
+            active=True
         ),
         Service(
             name="Weight Management Program", 
             description="Nutrition plan for weight goals.",
-            duration_options_id=5,  # 60 → id=5
-            price=4000, 
             user_id=6, 
-            service_type_id=3
+            service_type_id=3,
+            active=True
         ),
         Service(
             name="Detox Meal Plan", 
             description="7-day detox diet plan.",
-            duration_options_id=1,  # 30 → id=1
-            price=2500, 
             user_id=6, 
-            service_type_id=3
+            service_type_id=3,
+            active=True
         ),
         Service(
             name="Diabetic Diet Counseling", 
             description="Diet guidance for managing diabetes.",
-            duration_options_id=4,  # 50 → id=4
-            price=3500, 
             user_id=6, 
-            service_type_id=3
+            service_type_id=3,
+            active=True
         ),
         Service(
             name="Sports Nutrition", 
             description="Nutrition plans for athletes.",
-            duration_options_id=5,  # 60 → id=5
-            price=4500, 
             user_id=6, 
-            service_type_id=3
+            service_type_id=3,
+            active=True
         ),
 
         # Physiotherapy (therapists[3])
         Service(
             name="Back Pain Relief", 
             description="Targeted therapy for lower back pain.",
-            duration_options_id=5,  # 60 → id=5
-            price=5000, 
             user_id=7, 
-            service_type_id=4
+            service_type_id=4,
+            active=True
         ),
         Service(
             name="Post-Surgery Rehab", 
             description="Recovery program for post-surgery.",
-            duration_options_id=8,  # 90 → id=8
-            price=7000, 
             user_id=7, 
-            service_type_id=4
+            service_type_id=4,
+            active=True
         ),
         Service(
             name="Sports Injury Therapy", 
             description="Rehab for sports injuries.",
-            duration_options_id=7,  # 75 → id=7
-            price=6000, 
             user_id=7, 
-            service_type_id=4
+            service_type_id=4,
+            active=True
         ),
         Service(
             name="Joint Mobilization", 
             description="Improve mobility and reduce stiffness.",
-            duration_options_id=3,  # 45 → id=3
-            price=3500, 
             user_id=7, 
-            service_type_id=4
+            service_type_id=4,
+            active=True
         ),
         Service(
             name="Neck & Shoulder Therapy", 
             description="Pain relief for neck and shoulder.",
-            duration_options_id=4,  # 50 → id=4
-            price=4000, 
             user_id=7, 
-            service_type_id=4
+            service_type_id=4,
+            active=True
         ),
 
         # Massage Therapy (therapists[4])
         Service(
             name="Swedish Massage", 
             description="Gentle, relaxing full-body massage.",
-            duration_options_id=5,  # 60 → id=5
-            price=4000, 
             user_id=8, 
-            service_type_id=5
+            service_type_id=5,
+            active=True
         ),
         Service(
             name="Deep Tissue Massage", 
             description="Massage focusing on deep tissues.",
-            duration_options_id=7,  # 75 → id=7
-            price=5000, 
             user_id=8, 
-            service_type_id=5
+            service_type_id=5,
+            active=True
         ),
         Service(
             name="Hot Stone Massage", 
             description="Warm stone therapy for stress relief.",
-            duration_options_id=6,  # 70 → id=6
-            price=4800, 
             user_id=8, 
-            service_type_id=5
+            service_type_id=5,
+            active=True
         ),
         Service(
             name="Aromatherapy Massage", 
             description="Essential oil massage for relaxation.",
-            duration_options_id=5,  # 60 → id=5
-            price=4200, 
             user_id=8, 
-            service_type_id=5
+            service_type_id=5,
+            active=True
         ),
         Service(
             name="Reflexology", 
             description="Pressure point therapy on feet and hands.",
-            duration_options_id=2,  # 40 → id=2
-            price=3000, 
             user_id=8, 
-            service_type_id=5
+            service_type_id=5,
+            active=True
         ),
     ]
 
@@ -402,12 +422,67 @@ def seed_data():
                 Service(
                     name=service.name,
                     description=service.description,
-                    duration_options_id=service.duration_options_id,
-                    price=service.price,
                     user_id=service.user_id,
-                    service_type_id=service.service_type_id
+                    service_type_id=service.service_type_id,
+                    active= service.active
                 )
             )
 
+    therapist_services = [
+        TherapistService(
+            therapist_id = 1,
+            service_id = 1,
+            price = 4000.00,
+            duration_options_id = 9,
+            active =True
+        ),
+        TherapistService(
+            therapist_id = 3,
+            service_id = 1,
+            price = 3000.00,
+            duration_options_id = 8,
+            active =True
+        ),
+        TherapistService(
+            therapist_id = 2,
+            service_id = 2,
+            price = 3000.00,
+            duration_options_id = 8,
+            active =True
+        ),
+        TherapistService(
+            therapist_id = 3,
+            service_id = 2,
+            price = 6000.00,
+            duration_options_id = 3,
+            active =True
+        ),
+        TherapistService(
+            therapist_id = 4,
+            service_id = 3,
+            price = 6000.00,
+            duration_options_id = 6,
+            active =True
+        ),
+        TherapistService(
+            therapist_id = 4,
+            service_id = 3,
+            price = 6000.00,
+            duration_options_id = 6,
+            active =True
+        )
+    ]
+    for service in therapist_services:
+        if not TherapistService.query.filter_by(therapist_id=service.therapist_id,
+                                       service_id = service.service_id).first():
+            db.session.add(
+                TherapistService(
+                    therapist_id=service.therapist_id,
+                    service_id=service.service_id,
+                    price=service.price,
+                    duration_options_id=service.duration_options_id,
+                    active=service.active
+                )
+            )
     db.session.commit()
     print("✅ Roles & Service Types seeded successfully!")

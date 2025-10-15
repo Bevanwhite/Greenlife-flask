@@ -16,3 +16,8 @@
 -   `seed_data()`
 -   create virtual env using conda `conda create --name venv python=3.12`
 -   activate it using `conda activate venv`
+    from greenlife import db
+    db.drop_all()
+    db.create_all()
+    from greenlife.seeds import seed_data
+    seed_data()

@@ -1,0 +1,57 @@
+{% from "helper/form_helper.html.j2" import render_field %}
+{% extends "layout.html.j2" %} 
+{% block content %}
+<div class="card col-md-7 mt-3 p-3 mx-auto pb-4">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset>
+            <legend class="text-center">{{ legend }}</legend>
+            {{ render_field(form.appointment_time) }}
+            {{ render_field(form.notes) }}
+            {{ render_field(form.service) }}
+            {{ render_field(form.therapist) }}
+            <div class="form-group row mt-2">
+                <div class="col-md-4 offset-md-3">
+                    {{form.submit(value=legend,class="btn btn-outline-secondary col-md-12")}}
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script>
+    let service_select = document.getElementById('service');
+    let therapist_select = document.getElementById('therapist');
+
+
+    service_select.onchange = function(){
+        service = service_select.value;
+
+        const url = service 
+            ? `/therapist_by_services/${service}`
+            : `/all_therapists`;
+
+        fetch(url).then(function(response) {
+            response.json().then(function(data) {
+                let optionHTML = '';
+
+                for(let therapist of data.therapists){
+                    optionHTML += '<option value="' + therapist.id +'">'+ therapist.name + '</option>';
+                }
+
+                therapist_select.innerHTML = optionHTML || '<option value="">No therapists found</option>';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                therapist_select.innerHTML = '<option value="">Error loading therapists</option>';
+            });
+        });
+    }
+    
+    flatpickr("#appointment_time", {
+      enableTime: true,
+      dateFormat: "Y-m-d H:i:S",  // Matches your DateTimeField format
+      time_24hr: true,
+      allowInput: true
+    });
+</script>
+{% endblock content %}

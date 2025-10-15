@@ -1,0 +1,70 @@
+{% from "helper/form_helper.html.j2" import render_field %}
+{% extends "layout.html.j2" %} 
+{% block content %}
+<div class="row">
+    <!-- Blog Post 1 -->
+    <div class="col-md-6 mt-3">
+        <div class="card blog-card">
+            <img src="https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="card-img-top blog-img" alt="Meditation Benefits">
+            <div class="card-body">
+                <span class="badge bg-primary mb-2">Meditation</span>
+                <h3 class="card-title">5 Benefits of Daily Meditation</h3>
+                <p class="card-text">Discover how just 10 minutes of daily meditation can transform your mental health and overall wellbeing.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">June 12, 2023</small>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blog Post 2 -->
+    <div class="col-md-6 mt-3">
+        <div class="card blog-card">
+            <img src="{{url_for('static', filename='WhatsApp-Image-2025-04-16-at-14.27.10-4-848x450.jpeg')}}" class="card-img-top blog-img" alt="Ayurvedic Diet">
+            <div class="card-body">
+                <span class="badge bg-success mb-2">Nutrition</span>
+                <h3 class="card-title">Ayurvedic Diet for Summer</h3>
+                <p class="card-text">Learn which foods to eat and avoid during the summer months according to Ayurvedic principles.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">June 5, 2023</small>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blog Post 3 -->
+    <div class="col-md-6 mt-3">
+        <div class="card blog-card">
+            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="card-img-top blog-img" alt="Yoga for Beginners">
+            <div class="card-body">
+                <span class="badge bg-info mb-2">Yoga</span>
+                <h3 class="card-title">Yoga Poses for Beginners</h3>
+                <p class="card-text">Start your yoga journey with these 10 essential poses that are perfect for beginners.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">May 28, 2023</small>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Blog Post 4 -->
+    <div class="col-md-6 mt-3">
+        <div class="card blog-card">
+            <img src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="card-img-top blog-img" alt="Holistic Healing">
+            <div class="card-body">
+                <span class="badge bg-warning mb-2">Wellness</span>
+                <h3 class="card-title">Holistic Approaches to Stress Management</h3>
+                <p class="card-text">Discover natural and holistic methods to manage stress and improve your quality of life.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">May 20, 2023</small>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

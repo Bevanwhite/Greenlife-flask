@@ -1,7 +1,8 @@
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import jsonify, render_template, url_for, flash, redirect, request, abort
 from greenlife import app, db, bcrypt, mail
 from greenlife.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
-                             ServiceForm, RequestResetForm, ResetPasswordForm)
+                             ServiceForm, RequestResetForm, ResetPasswordForm,
+                             AppointmentForm)
 from greenlife.models import (User, Service, Appointment, Message,
                                Query, ServiceType, Role, Admin, Therapist)
 from flask_login import login_user, current_user, logout_user, login_required
@@ -14,11 +15,47 @@ from flask_mail import Message
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html.j2')
+    services = [
+        {
+            'icon': 'bi bi-flower1',
+            'title': 'Ayurvedic Therapy',
+            'description': 'Traditional Ayurvedic treatments to restore balance and promote natural healing.',
+            'link': '#'
+        },
+        {
+            'icon': 'bi bi-person-standing',
+            'title': 'Yoga & Meditation',
+            'description': 'Guided sessions to improve flexibility, reduce stress, and enhance mindfulness.',
+            'link': '#'
+        },
+        {
+            'icon': 'bi bi-egg-fried',
+            'title': 'Nutrition Consultation',
+            'description': 'Personalized diet plans to support your health goals and overall wellbeing.',
+            'link': '#'
+        },
+        {
+            'icon': 'bi bi-person-walking',
+            'title': 'Physiotherapy',
+            'description': 'Specialized treatments to restore movement and function affected by injury or disability.',
+            'link': '#'
+        },
+        {
+            'icon': 'bi bi-hand-index',
+            'title': 'Massage Therapy',
+            'description': 'Therapeutic massage techniques to relieve tension, reduce stress, and promote relaxation.',
+            'link': '#'
+        }
+    ]
+    return render_template('home.html.j2', services=services)
 
 @app.route("/about")
 def about():
     return render_template('about.html.j2',title='About')
+
+@app.route("/contact_us")
+def contact_us():
+    return render_template('contact_us.html.j2',title='Contact Us')
 
 @app.route("/register", methods=['GET','POST'])
 def register():
@@ -57,10 +94,13 @@ def login():
             if (next_page):
                 return redirect(next_page)
             elif (user.role.name == 'admin' ):
+                flash('Your have successfully login in', 'success')
                 return redirect(url_for('account'))
             elif (user.role.name == 'therapist'):
+                flash('Your have successfully login in', 'success')
                 return redirect(url_for('about'))
             else:
+                flash('Your have successfully login in', 'success')
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
@@ -108,12 +148,58 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html.j2',title='Account', image_file=image_file, form=form)
 
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request', 
+                  sender=('Green Life', 'jeffery1996.jbw@gmail.com'),
+                  recipients=[user.email])
+    reset_url = url_for('reset_token', token=token, _external=True)
+    msg.body = render_template('email_reset_password.txt', 
+                                 user=user, reset_url=reset_url)
+    msg.html = render_template('email_reset_password.html.j2', 
+                                 user=user, reset_url=reset_url)
+    mail.send(msg)
+
+
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been sent with instructions to reset your password','success')
+        return redirect(url_for('login'))
+    return render_template('reset_request.html.j2', title='Reset Password', form=form)
+
+
+@app.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password= bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash(f'Your password has been update! you are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html.j2', title='Reset Password', form=form)
+
+
 @app.route("/service")
 @login_required
 def service():
     page = request.args.get('page', 1, type=int)
     services = Service.query.order_by(Service.date_created.desc()).paginate(page=page, per_page=5)
     return render_template('service.html.j2', title="Services", services=services)
+
 
 @app.route("/service/new",  methods=['GET','POST'])
 @login_required
@@ -132,6 +218,7 @@ def new_service():
         flash('Your service has been created!', 'success')
         return redirect(url_for('service'))
     return render_template('create_service.html.j2', title='New Service', form=form,legend='New Service')
+
 
 @app.route("/service/<int:service_id>")
 @login_required
@@ -173,8 +260,10 @@ def update_service(service_id):
         form.service_type.data = str(service.service_type_id)
         form.duration.data = str(service.duration_options_id)
         form.price.data = service.price
-    return render_template('create_service.html.j2', title='Update Service', form=form,
+    return render_template('create_service.html.j2', title='Update Service', 
+                           form=form,
                            legend='Update Service')
+
 
 @app.route("/service/<int:service_id>/delete", methods=['POST'])
 @login_required
@@ -188,6 +277,7 @@ def delete_service(service_id):
     flash('Your service has been deleted', 'success')
     return redirect(url_for('service'))
 
+
 @app.route("/user/<string:username>")
 @login_required
 def user_services(username):
@@ -196,58 +286,61 @@ def user_services(username):
     services = Service.query.filter_by(user_service=user)\
         .order_by(Service.date_created.desc())\
         .paginate(page=page, per_page=5)
-    return render_template('user_services.html.j2', title='Users', services=services, user=user)
+    return render_template('user_services.html.j2', title='Users', 
+                           services=services, user=user)
 
 
-def send_reset_email(user):
-    token = user.get_reset_token()
-    msg = Message('Password Reset Request', 
-                  sender=('Green Life', 'jeffery1996.jbw@gmail.com'),
-                  recipients=[user.email])
-    reset_url = url_for('reset_token', token=token, _external=True)
-    msg.body = render_template('email_reset_password.txt', 
-                                 user=user, reset_url=reset_url)
-    msg.html = render_template('email_reset_password.html.j2', 
-                                 user=user, reset_url=reset_url)
-    mail.send(msg)
-
-@app.route("/reset_password", methods=['GET', 'POST'])
-def reset_request():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    form = RequestResetForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password','success')
-        return redirect(url_for('login'))
-    return render_template('reset_request.html.j2', title='Reset Password', form=form)
-
-
-@app.route("/reset_password/<token>", methods=['GET', 'POST'])
-def reset_token(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
-    user = User.verify_reset_token(token)
-    if user is None:
-        flash('That is an invalid or expired token', 'warning')
-        return redirect(url_for('reset_request'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        hashed_password= bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user.password = hashed_password
-        db.session.commit()
-        flash(f'Your password has been update! you are now able to log in', 'success')
-        return redirect(url_for('login'))
-    return render_template('reset_token.html.j2', title='Reset Password', form=form)
-
-
-
-@app.route("/appointment/new")
+@app.route("/appointment/new", methods=['GET','POST'])
 @login_required
-@role_required('user')
 def new_appointment():
-    return render_template('create_appointment.html.j2', title='New Appointment')
+    form = AppointmentForm()
+    if form.validate_on_submit():
+        appointment = Appointment(
+            appointment_time = form.appointment_time.data,
+            notes = form.notes.data,
+            client_id = current_user.id,
+            therapist_id = form.therapist.data,
+            service_id = form.service.data
+        )
+        db.session.add(appointment)
+        db.session.commit()
+        flash('Your appointment has been created!', 'success')
+        return redirect(url_for('appointment'))
+    return render_template('create_appointment.html.j2', title='New Appointment',
+                            form=form, legend='Create Appoinment')
+
+@app.route("/appointment", methods=['GET','POST'])
+@login_required
+def appointment():
+    page = request.args.get('page', 1, type=int)
+    appointments = Appointment.query.order_by(Appointment.date_posted.desc()).paginate(page=page, per_page=5)
+    return render_template('appointment.html.j2', title="Appointments", appointments=appointments)
+
+@app.route("/therapist_by_services/<id>")
+def therapist_by_services(id):
+    service = Service.query.get(id)
+    therapist = []
+
+    if service:
+        therapist = [{'id': service.user_service.id, 'name': service.user_service.full_name}]
+    
+    # Prepend the "--Select--" option at the beginning
+    therapist.insert(0, {'id': '', 'name': '-- select --'})
+
+    return jsonify({'therapists': therapist})
+
+@app.route('/all_therapists')
+def all_therapists():
+    therapists = Therapist.query.all()
+
+    data = [{'id': t.therapist.id, 'name': t.therapist.full_name} for t in therapists]
+
+    # Prepend the "--Select--" option at the beginning
+    data.insert(0, {'id': '', 'name': '-- select --'})
+
+    print(data)
+
+    return jsonify({'therapists': data})
 
 @app.route("/message/new")
 @role_required('user', 'therapist')
@@ -258,6 +351,21 @@ def new_message():
 
 @app.route("/query/new")
 @login_required
-@role_required('user', 'therapist', 'admin')
 def new_query():
     return render_template('create_query.html.j2', title='New Query')
+
+@app.route("/admin_dashboard")
+@login_required
+def admin_dashboard():
+    return render_template('admin_dashboard.html.j2', title='New Query')
+
+@app.route("/blog_post")
+@login_required
+def blog_post():
+    return render_template('blog_post.html.j2', title='blog_post')
+
+@app.route("/dashboard")
+@login_required
+@role_required('therapist', 'admin')
+def dashboard():
+    return render_template('dashboard.html.j2', title='Dashboard')

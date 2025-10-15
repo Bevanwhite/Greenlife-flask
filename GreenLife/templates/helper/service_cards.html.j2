@@ -1,0 +1,35 @@
+<div class="row">
+    {% for service in services[:3] %}
+        <div class="col-md-4">
+            <div class="card service-card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="service-icon">
+                        <i class="{{ service.icon }}"></i>
+                    </div>
+                    <h3>{{ service.title }}</h3>
+                    <p class="p-height-services">{{ service.description }}</p>
+                    <a href="{{ service.link }}" class="btn btn-outline-primary mt-auto align-self-center">Learn More</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% if services|length > 3 %}
+<div class="row mt-4 justify-content-center">
+    {% for service in services[3:] %}
+        <div class="col-md-4">
+            <div class="card service-card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="service-icon">
+                        <i class="{{ service.icon }}"></i>
+                    </div>
+                    <h3>{{ service.title }}</h3>
+                    <p class="p-height-services">{{ service.description }}</p>
+                    <a href="{{ service.link }}" class="btn btn-outline-primary mt-3">Learn More</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,35 @@
+{% extends "index.html.j2" %}
+{% block index %}
+{% include "helper/nav.html.j2" %}
+<div class="row col-md-12">
+    <div class="col-md-2 offset-md-1">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="#" class="nav-link text-muted"><i class="bi bi-grid"></i> Dashboard</a>
+            </li>
+            <li class="nav-item mt-3 small text-black text-uppercase">User Management</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-muted"><i class="bi bi-people"></i> Users</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-muted"><i class="bi bi-person-plus"></i> Add User</a>
+            </li>
+            <li class="nav-item mt-3 small text-black text-uppercase">Reports</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-muted"><i class="bi bi-bar-chart-line"></i> Sales Reports</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-muted"><i class="bi bi-pie-chart"></i> User Analytics</a>
+            </li>
+            <li class="nav-item mt-3 small text-black text-uppercase ">Feedback</li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-muted"><i class="bi bi-chat-left-text"></i> View Feedback</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-9 text-bg-secondary">
+       
+    </div>
+</div>
+{% include "helper/footer.html.j2" %}
+{% endblock index %}

@@ -1,8 +1,9 @@
 from decimal import Decimal
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError, TextAreaField, SelectField, DecimalField
+from wtforms import (DateTimeField, StringField, PasswordField, SubmitField, BooleanField, 
+                     ValidationError, TextAreaField, SelectField, DecimalField)
 from wtforms.validators import DataRequired, Length, Email, EqualTo
-from greenlife.models import User, Service, ServiceType, DurationOptions
+from greenlife.models import User, Service, ServiceType, DurationOptions, Appointment, Role
 from flask_login import current_user
 from flask_wtf.file import FileField, FileAllowed
  
@@ -106,7 +107,36 @@ class ResetPasswordForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
 
-# class AppointmentForm(FlaskForm):
+class AppointmentForm(FlaskForm):
+    appointment_time = DateTimeField('Appointment Time', validators=[DataRequired()])
+    notes = TextAreaField('Note', validators=[DataRequired(), Length(max=500)])
+    service = SelectField('Service', validators=[DataRequired()])
+    therapist = SelectField('Therapist', validators=[DataRequired()])
+    submit = SubmitField('Create Appointment')
+
+    def __init__(self, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+        self.service.choices = (('','-- select --'),) + tuple(
+            [(st.id, st.name) for st in Service.query.all()]
+        )
+        self.therapist.choices = (('', '-- select --'),) + tuple(
+            [(do.id, do.full_name) for do in User.query.join(Role).filter(Role.name == 'therapist').all()]
+        )
+
+    def validate_existing(self, service, therapist,date):
+        existing  = Appointment.query.filter_by(
+            therapist=int(therapist.data),
+            service=int(service.data),
+            dateTime = date.data
+            ).first()
+        if existing:
+            raise ValidationError("This appointment already exists for the given client, therapist, and service.")
+
+
+
+
+
+
 
 # class MessageForm(FlaskForm):
 
