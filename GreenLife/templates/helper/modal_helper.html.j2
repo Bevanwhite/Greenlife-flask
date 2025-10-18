@@ -40,3 +40,27 @@
         {% endif%}
     {% endfor %}
 {% endmacro %}
+
+{% macro render_cards(services) %}
+    {% for s in services %}
+        {% if loop.index0 is divisibleby 3 %}
+        <div class="row">
+        {% endif %}
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{s.service_image}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                <h5 class="card-title"><a href="{{url_for('view_service', service_id=s.id)}}">{{ s.name }}</a></h5>
+                <p class="card-text">{{ s.description }}</p>
+                <p class="text-muted mb-1"><strong>Service Type:</strong> {{ s.service_type.name }}</p>
+                <p class="text-muted"><small><strong>Date Posted:</strong> {{ s.date_created.strftime('%B %d, %Y') }}</small></p>
+                <p class="text-muted"><small><strong>Created by:</strong> {{ s.user.full_name }}</small></p>
+                </div>
+            </div>
+        </div>
+    {% if (loop.index0 + 1) is divisibleby 3 or loop.last %}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}

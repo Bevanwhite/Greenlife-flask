@@ -9,8 +9,6 @@
                 <p>Name</p>
                 <p>Description</p>
                 <p>Type</p>
-                <p>Duration</p>
-                <p>Price</p>
                 <p>Date</p>
                 <p>Created by</p>
             </div>
@@ -18,10 +16,8 @@
                 <p> : {{service.name}}</p>
                 <p> : {{service.description}}</p>
                 <p> : {{service.service_type.name}}</p>
-                <p> : {{service.duration_option.name}}</p>
-                <p> : {{service.price}}</p>
                 <p> : {{service.date_created.strftime("%B %d, %Y")}}</p>
-                <p> : {{service.user_service.full_name}}</p>
+                <p> : {{service.user.full_name}}</p>
             </div>
         </div>
     </div>

@@ -1,5 +1,8 @@
 from greenlife import db, bcrypt
-from greenlife.models import Role, ServiceType, User, Service, Therapist, Admin, DurationOptions,TherapistService
+from greenlife.models import (Role, ServiceType, User, Service, Therapist, Admin,
+                               DurationOptions,TherapistService, AppointmentStatus,
+                               Appointment,)
+from datetime import datetime
 
 def seed_data():
     # Add roles
@@ -8,6 +11,57 @@ def seed_data():
     for role in roles:
         if not Role.query.filter_by(name=role).first():
             db.session.add(Role(name=role))
+
+    appointmentstatus = [
+        AppointmentStatus(
+            name='Scheduled',
+            color = '#FFC107'
+        ),
+        AppointmentStatus(
+            name='Confirmed',
+            color = '#28A745'
+        ),
+        AppointmentStatus(
+            name='CheckedIn',
+            color = '#0D6EFD'
+        ),
+        AppointmentStatus(
+            name='InProgress',
+            color = '#FD7E14'
+        ),
+        AppointmentStatus(
+            name='Completed',
+            color = '#198754'
+        ),
+        AppointmentStatus(
+            name='Cancelled',
+            color = '#DC3545'
+        ),
+        AppointmentStatus(
+            name='NoShow',
+            color = '#B02A37'
+        ),
+        AppointmentStatus(
+            name='Rescheduled',
+            color = '#6F42C1'
+        ),
+        AppointmentStatus(
+            name='PendingPayment',
+            color = '#FFC107'
+        ),
+        AppointmentStatus(
+            name='Refunded',
+            color = '#0DCAF0'
+        ),
+    ]
+
+    for i in appointmentstatus:
+        if not AppointmentStatus.query.filter_by(name=i.name).first():
+            db.session.add(AppointmentStatus(
+                    name=i.name,
+                    color=i.color
+                )
+            )
 
     service_types = [
         "Ayurvedic Therapy",
@@ -237,6 +291,7 @@ def seed_data():
             description="Full-body detox using traditional Ayurvedic herbs.",
             user_id=4, 
             service_type_id=1,
+            service_image = 'Herbal Detox.jpg',
             active=True
         ),
         Service(
@@ -244,6 +299,7 @@ def seed_data():
             description="Warm oil treatment poured over the forehead.",
             user_id=4, 
             service_type_id=1,
+            service_image = 'Shirodhara.jpg',
             active=True
         ),
         Service(
@@ -251,6 +307,7 @@ def seed_data():
             description="Deep cleansing and rejuvenation therapy.",
             user_id=4, 
             service_type_id=1,
+            service_image = 'Panchakarma.jpg',
             active=True
         ),
         Service(
@@ -258,6 +315,7 @@ def seed_data():
             description="Oil-based massage for body balance.",
             user_id=4, 
             service_type_id=1,
+            service_image = 'Abhyanga Massage.jpg',
             active=True
         ),
         Service(
@@ -265,6 +323,7 @@ def seed_data():
             description="Nasal therapy with medicated oils.",
             user_id=4, 
             service_type_id=1,
+            service_image = 'Nasya.jpg',
             active=True
         ),
         Service(
@@ -272,6 +331,7 @@ def seed_data():
             description="Energizing yoga practice to start your day.",
             user_id=5, 
             service_type_id=2,
+            service_image = 'Morning Yoga Flow.jpg',
             active=True
         ),
         Service(
@@ -279,6 +339,7 @@ def seed_data():
             description="Breathing exercises for calmness.",
             user_id=5, 
             service_type_id=2,
+            service_image = 'Pranayama Breathing.jpg',
             active=True
         ),
         Service(
@@ -286,6 +347,7 @@ def seed_data():
             description="Guided meditation for focus.",
             user_id=5, 
             service_type_id=2,
+            service_image = 'Mindfulness Meditation.jpg',
             active=True
         ),
         Service(
@@ -293,6 +355,7 @@ def seed_data():
             description="Deep relaxation yoga practice.",
             user_id=5, 
             service_type_id=2,
+            service_image='Yoga Nidra.jpg',
             active=True
         ),
         Service(
@@ -300,6 +363,7 @@ def seed_data():
             description="Traditional yoga for strength and flexibility.",
             user_id=5, 
             service_type_id=2,
+            service_image = 'Hatha Yoga.jpg',
             active=True
         ),
 
@@ -309,6 +373,7 @@ def seed_data():
             description="Personalized diet plan consultation.",
             user_id=6, 
             service_type_id=3,
+            service_image = 'Diet Consultation.jpg',
             active=True
         ),
         Service(
@@ -316,6 +381,7 @@ def seed_data():
             description="Nutrition plan for weight goals.",
             user_id=6, 
             service_type_id=3,
+            service_image = 'Weight Management Program.jpg',
             active=True
         ),
         Service(
@@ -323,6 +389,7 @@ def seed_data():
             description="7-day detox diet plan.",
             user_id=6, 
             service_type_id=3,
+            service_image = 'Detox Meal Plan.jpg',
             active=True
         ),
         Service(
@@ -330,6 +397,7 @@ def seed_data():
             description="Diet guidance for managing diabetes.",
             user_id=6, 
             service_type_id=3,
+            service_image = 'Diabetic Diet Counseling.jpg',
             active=True
         ),
         Service(
@@ -337,6 +405,7 @@ def seed_data():
             description="Nutrition plans for athletes.",
             user_id=6, 
             service_type_id=3,
+            service_image = 'Sports Nutrition.jpg',
             active=True
         ),
 
@@ -424,6 +493,7 @@ def seed_data():
                     description=service.description,
                     user_id=service.user_id,
                     service_type_id=service.service_type_id,
+                    service_image = service.service_image,
                     active= service.active
                 )
             )
@@ -472,17 +542,121 @@ def seed_data():
             active =True
         )
     ]
-    for service in therapist_services:
-        if not TherapistService.query.filter_by(therapist_id=service.therapist_id,
-                                       service_id = service.service_id).first():
+    for t in therapist_services:
+        if not TherapistService.query.filter_by(therapist_id=t.therapist_id,
+                                       service_id = t.service_id).first():
             db.session.add(
                 TherapistService(
-                    therapist_id=service.therapist_id,
-                    service_id=service.service_id,
-                    price=service.price,
-                    duration_options_id=service.duration_options_id,
-                    active=service.active
+                    therapist_id=t.therapist_id,
+                    service_id=t.service_id,
+                    price=t.price,
+                    duration_options_id=t.duration_options_id,
+                    active=t.active
                 )
             )
+    
+    appointments = [
+        Appointment(
+            appointment_time = '2025-10-18 12:00:00',
+            status_id = 1,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-19 12:00:00',
+            status_id = 2,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-20 12:00:00',
+            status_id = 3,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-21 12:00:00',
+            status_id = 4,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-22 12:00:00',
+            status_id = 5,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-23 12:00:00',
+            status_id = 6,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-24 12:00:00',
+            status_id = 7,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-24 12:00:00',
+            status_id = 8,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-24 12:00:00',
+            status_id = 9,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        ),
+        Appointment(
+            appointment_time = '2025-10-24 12:00:00',
+            status_id = 10,
+            notes = '',
+            client_id = 1,
+            therapist_id = 3,
+            therapist_service_id = 1
+        )
+    ]
+
+    for t in appointments:
+
+        if isinstance(t.appointment_time, str):
+            t.appointment_time = datetime.strptime(t.appointment_time, "%Y-%m-%d %H:%M:%S")
+
+        if not Appointment.query.filter_by(appointment_time=t.appointment_time,
+                                       client_id = t.client_id,
+                                       therapist_id=t.therapist_id,
+                                       therapist_service_id = t.therapist_service_id).first():
+            db.session.add(
+                Appointment(
+                    appointment_time = t.appointment_time,
+                    status_id = t.status_id,
+                    notes = t.notes,
+                    client_id = t.client_id,
+                    therapist_id = t.therapist_id,
+                    therapist_service_id = t.therapist_service_id
+                )
+            )
+
     db.session.commit()
     print("✅ Roles & Service Types seeded successfully!")

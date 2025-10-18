@@ -1,0 +1,37 @@
+{% from "helper/modal_helper.html.j2" import delete_modal, render_pagination %}
+{% extends "layout.html.j2" %} 
+{% block content %}
+<table class="table mt-2">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Status</th>
+            <th scope="col">Service Type</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Price</th>
+            <th scope="col">Created By</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+        <tr>
+            <th scope="row">{{ appointment.id }}</th>
+            <td>{{ appointment.appointment_time.strftime("%Y-%m-%d %H:%M %p") }}</td>
+            <td>{{ appointment.notes }}</td>
+            <td>
+                <span class="badge" style="background-color: {{ appointment.status.color }};">
+                    {{ appointment.status.name }}
+                </span>
+            </td>
+            <td>{{ appointment.therapist_service.service.service_type.name }}</td>
+            <td>{{ appointment.therapist_service.duration_option.name }}</td>
+            <td>{{ appointment.therapist_service.price }}</td>
+            <td>{{ appointment.appointment_client.full_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}

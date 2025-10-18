@@ -29,27 +29,27 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{url_for('ayurvedic_therapy')}}">
                                 Ayurvedic Therapy
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{url_for('yoga_meditation')}}">
                                 Yoga & Meditation
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{url_for('nutrition_consultation')}}">
                                 Nutrition & Diet
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{url_for('physiotherapy')}}">
                                 Physiotherapy
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{url_for('massage_therapy')}}">
                                 Massage Therapy
                             </a>
                         </li>
@@ -81,7 +81,12 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="{{url_for('new_appointment')}}">
+                                        Create Appointments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{url_for('user_appointment')}}">
                                         View Appointments
                                     </a>
                                 </li>
@@ -117,7 +122,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="{{url_for('therapist_appointment')}}">
                                         Appointments
                                     </a>
                                 </li>

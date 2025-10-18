@@ -26,9 +26,11 @@
     service_select.onchange = function(){
         service = service_select.value;
 
+        console.log(service)
+
         const url = service 
             ? `/therapist_by_services/${service}`
-            : `/all_therapists`;
+            : `/no_therapists`;
 
         fetch(url).then(function(response) {
             response.json().then(function(data) {

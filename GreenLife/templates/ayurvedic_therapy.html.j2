@@ -1,0 +1,6 @@
+{% from "helper/modal_helper.html.j2" import render_cards %}
+{% extends "layout.html.j2" %} 
+{% block content %}
+<div class="mt-4"></div>
+{{ render_cards(services) }}
+{% endblock content %}

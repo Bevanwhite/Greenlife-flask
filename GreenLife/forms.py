@@ -3,9 +3,10 @@ from flask_wtf import FlaskForm
 from wtforms import (DateTimeField, StringField, PasswordField, SubmitField, BooleanField, 
                      ValidationError, TextAreaField, SelectField, DecimalField)
 from wtforms.validators import DataRequired, Length, Email, EqualTo
-from greenlife.models import User, Service, ServiceType, DurationOptions, Appointment, Role
+from greenlife.models import User, Service, ServiceType, DurationOptions, Appointment, Role,TherapistService,Therapist
 from flask_login import current_user
 from flask_wtf.file import FileField, FileAllowed
+from greenlife import db
  
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -58,8 +59,6 @@ class ServiceForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=20)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(min=2, max=120)])
     service_type = SelectField('Type', validators=[DataRequired()])
-    duration = SelectField('Duration', validators=[DataRequired()])
-    price = DecimalField('Price', places=2, validators=[DataRequired()]) 
     submit = SubmitField('Create Service')
 
     def __init__(self, *args, **kwargs):
@@ -67,15 +66,10 @@ class ServiceForm(FlaskForm):
         self.service_type.choices = (('','-- select --'),) + tuple(
             [(st.id, st.name) for st in ServiceType.query.all()]
         )
-        self.duration.choices = (('', '-- select --'),) + tuple(
-            [(do.id, do.name) for do in DurationOptions.query.all()]
-        )
 
     original_name = None
     original_description = None
     original_service_type = None
-    original_duration = None
-    original_price = None
 
     def validate_name(self, name):
         if name.data != self.original_name:
@@ -83,13 +77,11 @@ class ServiceForm(FlaskForm):
             if service_name:
                 raise ValidationError('This name is already taken, use a diffrent one')
     
-    def is_updated(self, name, description, service_type, duration, price):
+    def is_updated(self, name, description, service_type):
         return (
             name.data == self.original_name and
             description.data == self.original_description and 
-            int(service_type.data) == self.original_service_type and 
-            int(duration.data) == self.original_duration and 
-            Decimal(price.data) == Decimal(self.original_price)
+            int(service_type.data) == self.original_service_type
         )
     
 class RequestResetForm(FlaskForm):
@@ -112,15 +104,23 @@ class AppointmentForm(FlaskForm):
     notes = TextAreaField('Note', validators=[DataRequired(), Length(max=500)])
     service = SelectField('Service', validators=[DataRequired()])
     therapist = SelectField('Therapist', validators=[DataRequired()])
+    status_id = StringField('Status_id', validators=[DataRequired(), Length(min=2, max=20)])
     submit = SubmitField('Create Appointment')
 
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
+        result = []
+        seen = set()
+        for ts in TherapistService.query.all():
+            if ts.service.name not in seen:
+                result.append((ts.service_id, ts.service.name))
+                seen.add(ts.service.name)
+
         self.service.choices = (('','-- select --'),) + tuple(
-            [(st.id, st.name) for st in Service.query.all()]
+            [(id, name) for id, name in result ]
         )
         self.therapist.choices = (('', '-- select --'),) + tuple(
-            [(do.id, do.full_name) for do in User.query.join(Role).filter(Role.name == 'therapist').all()]
+            [(do.id, do.user.full_name) for do in Therapist.query.all()]
         )
 
     def validate_existing(self, service, therapist,date):
@@ -131,8 +131,6 @@ class AppointmentForm(FlaskForm):
             ).first()
         if existing:
             raise ValidationError("This appointment already exists for the given client, therapist, and service.")
-
-
 
 
 

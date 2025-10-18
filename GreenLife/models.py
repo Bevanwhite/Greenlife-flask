@@ -70,6 +70,7 @@ class Service(db.Model):
     active = db.Column(db.Boolean, default=True)
     date_created = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    service_image = db.Column(db.String(20), nullable=False, default='default.jpg')
     service_type_id = db.Column(db.Integer, db.ForeignKey('service_types.id'), nullable=False)
 
     user = db.relationship('User', back_populates='services')
@@ -95,6 +96,21 @@ class TherapistService(db.Model):
     duration_option = db.relationship('DurationOptions', back_populates='therapist_service')
     appointments = db.relationship('Appointment', back_populates='therapist_service', lazy=True)
 
+# ===========================================================
+# Appointment Status
+# ===========================================================
+class AppointmentStatus(db.Model):
+    __tablename__ = "appointment_status"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    color = db.Column(db.String(7), nullable=False)
+
+    # Bidirectional relationship
+    appointments = db.relationship("Appointment", 
+                                   back_populates="status", 
+                                   cascade="all, delete-orphan")
+
 
 # ===========================================================
 # APPOINTMENT
@@ -105,19 +121,20 @@ class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     appointment_time = db.Column(db.DateTime, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
-    status = db.Column(db.String(20))
+    status_id = db.Column(db.Integer, db.ForeignKey("appointment_status.id"), nullable=False, default=1)
     notes = db.Column(db.Text)
 
     client_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     therapist_id = db.Column(db.Integer, db.ForeignKey('therapist.id'), nullable=False)
     therapist_service_id = db.Column(db.Integer, db.ForeignKey('therapist_service.id'), nullable=False)
-    review_Id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=False)
+    review_Id = db.Column(db.Integer, db.ForeignKey('review.id'), nullable=True)
 
     appointment_client = db.relationship('User', back_populates='client_appointments', lazy=True)
     appointment_therapist = db.relationship('Therapist', back_populates='therapist_appointments', lazy=True)
     therapist_service = db.relationship('TherapistService', back_populates='appointments', lazy=True)
     review = db.relationship('Review', back_populates='appointment', lazy=True)
     payment = db.relationship('Payment', back_populates='appointment', uselist=False)
+    status = db.relationship("AppointmentStatus",back_populates="appointments")
 
 # ===========================================================
 # PAYMENT

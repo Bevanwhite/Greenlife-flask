@@ -4,7 +4,8 @@ from greenlife.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                              ServiceForm, RequestResetForm, ResetPasswordForm,
                              AppointmentForm)
 from greenlife.models import (User, Service, Appointment, Message,
-                               Query, ServiceType, Role, Admin, Therapist)
+                               Query, ServiceType, Role, Admin, Therapist, 
+                               TherapistService,DurationOptions)
 from flask_login import login_user, current_user, logout_user, login_required
 from greenlife.auth_decorators import role_required
 import secrets
@@ -20,31 +21,31 @@ def home():
             'icon': 'bi bi-flower1',
             'title': 'Ayurvedic Therapy',
             'description': 'Traditional Ayurvedic treatments to restore balance and promote natural healing.',
-            'link': '#'
+            'link': url_for('ayurvedic_therapy')
         },
         {
             'icon': 'bi bi-person-standing',
             'title': 'Yoga & Meditation',
             'description': 'Guided sessions to improve flexibility, reduce stress, and enhance mindfulness.',
-            'link': '#'
+            'link': url_for('yoga_meditation')
         },
         {
             'icon': 'bi bi-egg-fried',
             'title': 'Nutrition Consultation',
             'description': 'Personalized diet plans to support your health goals and overall wellbeing.',
-            'link': '#'
+            'link': url_for('nutrition_consultation')
         },
         {
             'icon': 'bi bi-person-walking',
             'title': 'Physiotherapy',
             'description': 'Specialized treatments to restore movement and function affected by injury or disability.',
-            'link': '#'
+            'link': url_for('physiotherapy')
         },
         {
             'icon': 'bi bi-hand-index',
             'title': 'Massage Therapy',
             'description': 'Therapeutic massage techniques to relieve tension, reduce stress, and promote relaxation.',
-            'link': '#'
+            'link': url_for('massage_therapy')
         }
     ]
     return render_template('home.html.j2', services=services)
@@ -222,7 +223,6 @@ def new_service():
 
 @app.route("/service/<int:service_id>")
 @login_required
-@role_required('admin', 'therapist')
 def view_service(service_id):
     service =  Service.query.get_or_404(service_id)
     return render_template('view_service.html.j2', title='View Service', service=service)
@@ -233,24 +233,20 @@ def view_service(service_id):
 @role_required('admin', 'therapist')
 def update_service(service_id):
     service = Service.query.get_or_404(service_id)
-    if not (service.user_service == current_user or current_user.role.name == 'admin'):
+    if not (service.user == current_user or current_user.role.name == 'admin'):
         abort(403)
     form = ServiceForm(obj=service)
     form.original_name = service.name
     form.original_description = service.description
     form.original_service_type = service.service_type_id
-    form.original_duration = service.duration_options_id
-    form.original_price = service.price
     if form.validate_on_submit():
-        if form.is_updated(form.name, form.description, form.service_type, form.duration, form.price):
+        if form.is_updated(form.name, form.description, form.service_type):
             flash('No changes detected', 'warning')
             return redirect(url_for('service'))
         else:
             service.name = form.name.data
             service.description = form.description.data
             service.service_type_id = form.service_type.data
-            service.duration_options_id = form.duration.data
-            service.price = form.price.data
             db.session.commit()
             flash('Your service updated successfully', 'success')
             return redirect(url_for('service'))
@@ -258,8 +254,6 @@ def update_service(service_id):
         form.name.data = service.name
         form.description.data = service.description
         form.service_type.data = str(service.service_type_id)
-        form.duration.data = str(service.duration_options_id)
-        form.price.data = service.price
     return render_template('create_service.html.j2', title='Update Service', 
                            form=form,
                            legend='Update Service')
@@ -277,66 +271,104 @@ def delete_service(service_id):
     flash('Your service has been deleted', 'success')
     return redirect(url_for('service'))
 
+@app.route("/ayurvedic_therapy")
+def ayurvedic_therapy():
+    services = Service.query.filter_by(service_type_id=1).all()
+    for service in services:
+        service.service_image = url_for('static', filename='images/' + service.service_image)
+    return render_template('ayurvedic_therapy.html.j2', title='Ayurvedic Therapy',services=services)
 
-@app.route("/user/<string:username>")
-@login_required
-def user_services(username):
-    page = request.args.get('page', 1, type=int)
-    user = User.query.filter_by(username=username).first_or_404()
-    services = Service.query.filter_by(user_service=user)\
-        .order_by(Service.date_created.desc())\
-        .paginate(page=page, per_page=5)
-    return render_template('user_services.html.j2', title='Users', 
-                           services=services, user=user)
+@app.route("/yoga_meditation")
+def yoga_meditation():
+    services = Service.query.filter_by(service_type_id=2).all()
+    for service in services:
+        service.service_image = url_for('static', filename='images/' + service.service_image)
+    return render_template('yoga_meditation.html.j2', title='Yoga & Meditation',services=services)
+
+@app.route("/nutrition_consultation")
+def nutrition_consultation():
+    services = Service.query.filter_by(service_type_id=3).all()
+    for service in services:
+        service.service_image = url_for('static', filename='images/' + service.service_image)
+    return render_template('nutrition_consultation.html.j2', title='Nutrition Consultation',services=services)
+
 
 
 @app.route("/appointment/new", methods=['GET','POST'])
 @login_required
 def new_appointment():
     form = AppointmentForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit(): 
         appointment = Appointment(
             appointment_time = form.appointment_time.data,
             notes = form.notes.data,
             client_id = current_user.id,
             therapist_id = form.therapist.data,
-            service_id = form.service.data
+            therapist_service_id = form.service.data
         )
         db.session.add(appointment)
         db.session.commit()
         flash('Your appointment has been created!', 'success')
-        return redirect(url_for('appointment'))
-    return render_template('create_appointment.html.j2', title='New Appointment',
-                            form=form, legend='Create Appoinment')
+        return redirect(url_for('appointments'))
+    return render_template('create_appointment.html.j2', title='New Appointment', form=form, legend='Create Appoinment')
 
-@app.route("/appointment", methods=['GET','POST'])
+@app.route("/appointments", methods=['GET','POST'])
 @login_required
-def appointment():
+def appointments():
     page = request.args.get('page', 1, type=int)
-    appointments = Appointment.query.order_by(Appointment.date_posted.desc()).paginate(page=page, per_page=5)
-    return render_template('appointment.html.j2', title="Appointments", appointments=appointments)
+
+    appointments = Appointment.query\
+    .order_by(Appointment.date_posted.desc())\
+    .paginate(page=page, per_page=5)
+
+    return render_template('appointments.html.j2', title="Appointments", appointments=appointments)
+
+
+@app.route("/user/appointment", methods=['GET','POST'])
+@login_required
+def user_appointment():
+    
+    appointments = Appointment.query\
+    .filter_by(client_id = current_user.id)\
+    .all()
+
+    return render_template('user_appointment.html.j2', title="User Appointments", appointments=appointments)
+
+
+@app.route("/therapist/appointment", methods=['GET','POST'])
+@login_required
+@role_required('admin', 'therapist')
+def therapist_appointment():
+
+    appointments = Appointment.query\
+    .filter_by(therapist_id = current_user.therapist_profile.id)\
+    .all()
+
+    print(appointments)
+
+    return render_template('therapist_appointment.html.j2', title="therapist Appointments", appointments=appointments)
 
 @app.route("/therapist_by_services/<id>")
 def therapist_by_services(id):
-    service = Service.query.get(id)
+    print(id)
+    therapist_service = TherapistService.query.filter_by(service_id=id)
     therapist = []
 
-    if service:
-        therapist = [{'id': service.user_service.id, 'name': service.user_service.full_name}]
+    if therapist_service:
+        therapist = [{'id': t.therapist_id, 
+                      'name': t.therapist.user.full_name + "   " +
+                      DurationOptions.query.get(t.duration_options_id).name + "   " +
+                      str(t.price) 
+                      } for t in therapist_service]
     
     # Prepend the "--Select--" option at the beginning
     therapist.insert(0, {'id': '', 'name': '-- select --'})
 
     return jsonify({'therapists': therapist})
 
-@app.route('/all_therapists')
-def all_therapists():
-    therapists = Therapist.query.all()
-
-    data = [{'id': t.therapist.id, 'name': t.therapist.full_name} for t in therapists]
-
-    # Prepend the "--Select--" option at the beginning
-    data.insert(0, {'id': '', 'name': '-- select --'})
+@app.route('/no_therapists')
+def no_therapists():
+    data = [(0, {'id': '', 'name': '-- select --'})]
 
     print(data)
 
@@ -369,3 +401,18 @@ def blog_post():
 @role_required('therapist', 'admin')
 def dashboard():
     return render_template('dashboard.html.j2', title='Dashboard')
+
+
+@app.route("/physiotherapy")
+def physiotherapy():
+    services = Service.query.filter_by(service_type_id=4).all()
+    for service in services:
+        service.service_image = url_for('static', filename='images/' + service.service_image)
+    return render_template('physiotherapy.html.j2', title='Physiotherapy',services=services)
+
+@app.route("/massage_therapy")
+def massage_therapy():
+    services = Service.query.filter_by(service_type_id=5).all()
+    for service in services:
+        service.service_image = url_for('static', filename='images/' + service.service_image)
+    return render_template('massage_therapy.html.j2', title='Massage Therapy',services=services)

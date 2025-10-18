@@ -9,9 +9,7 @@
             {{ render_field(form.name) }}
             {{ render_field(form.description) }}
             {{ render_field(form.service_type, "col-md-3 pt-2 form-control-label" ,"form-select") }}
-            {{ render_field(form.duration, "col-md-3 pt-2 form-control-label" ,"form-select") }}
-            {{ render_field(form.price) }}
-            <div class="form-group row mt-2">
+            <div class="form-group row mt-3">
                 <div class="col-md-4 offset-md-3">
                     {{form.submit(value=legend,class="btn btn-outline-secondary col-md-12")}}
                 </div>

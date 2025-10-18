@@ -21,3 +21,5 @@
     db.create_all()
     from greenlife.seeds import seed_data
     seed_data()
+    exit()
+    make testpy
